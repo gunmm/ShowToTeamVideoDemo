@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="2GS-Ar-xMK">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="5Kt-Sa-mhU">
+            <objects>
+                <navigationController id="2GS-Ar-xMK" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Yco-iO-wOv">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="h9S-5a-LZS"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Xyp-pq-AsA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-888" y="145"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Jg6-B2-BOm"/>
+                        <viewControllerLayoutGuide type="bottom" id="0Sr-eB-uR4"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZTC-iI-crY">
+                                <rect key="frame" x="156.5" y="268.5" width="62" height="30"/>
+                                <state key="normal" title="视频测试"/>
+                                <connections>
+                                    <action selector="videoBtnAct:" destination="BYZ-38-t0r" eventType="touchUpInside" id="g4a-n2-GVR"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VGL-XH-jkd">
+                                <rect key="frame" x="156.5" y="368.5" width="62" height="30"/>
+                                <state key="normal" title="音频测试"/>
+                                <connections>
+                                    <action selector="audioBtnAct:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qF7-XQ-MCx"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="VGL-XH-jkd" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="tHW-zN-Ei5"/>
+                            <constraint firstItem="ZTC-iI-crY" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="vbZ-ZO-5XY"/>
+                            <constraint firstItem="VGL-XH-jkd" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="50" id="w18-58-zZR"/>
+                            <constraint firstItem="ZTC-iI-crY" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-50" id="yZx-0c-BcY"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="ZxF-nU-d8b"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="28" y="144"/>
+        </scene>
+    </scenes>
+</document>
