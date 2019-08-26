@@ -11,10 +11,15 @@
 #import "VideoCodeManager.h"
 #import "LFStreamRTMPSocket.h"
 
-@interface VideoViewController () <VideoManagerDelegate, VideoCodeManagerDelegate, LFStreamSocketDelegate>
+#import "AudioManager.h"
+
+@interface VideoViewController () <VideoManagerDelegate, VideoCodeManagerDelegate, LFStreamSocketDelegate, AudioManagerDelegate>
 
 @property (nonatomic, strong) VideoManager *videoManager;
 @property (nonatomic, strong) VideoCodeManager *videoCodeManager;
+
+@property (nonatomic, strong) AudioManager *audioManager;
+
 
 @property (nonatomic, strong) id<LFStreamSocket> socket;
 @property (nonatomic, strong) LFLiveStreamInfo *streamInfo;
@@ -52,12 +57,16 @@
     
     self.videoCodeManager = [[VideoCodeManager alloc] init];
     self.videoCodeManager.delegate = self;
+    
+    self.audioManager = [[AudioManager alloc] init];
+    self.audioManager.delegate = self;
+
 //    [self.socket start];
 }
 
 - (IBAction)beginBtnAct:(id)sender {
-    
     [self.videoManager startSession];
+    [self.audioManager startCapture];
 }
 
 #pragma mark -- VideoManagerDelegate
@@ -69,6 +78,13 @@
     NSLog(@"====== width:%zu height:%zu", width, height);
     [self.videoCodeManager encodeVideoData:pixelBuffer timeStamp:CACurrentMediaTime()*1000];
 }
+
+#pragma mark -- AudioManagerDelegate
+
+- (void)audioOutputData:(void* __nullable)mData mDataByteSize:(UInt32)mDataByteSize {
+    
+}
+
 
 #pragma mark -- VideoCodeManagerDelegate
 
@@ -105,6 +121,16 @@
     } else {
         self.canRecord = NO;
     }
+}
+
+/** callback buffer current status (回调当前缓冲区情况，可实现相关切换帧率 码率等策略)*/
+- (void)socketBufferStatus:(nullable id <LFStreamSocket>)socket status:(LFLiveBuffferState)status {
+    
+}
+
+/** callback socket errorcode */
+- (void)socketDidError:(nullable id <LFStreamSocket>)socket errorCode:(LFLiveSocketErrorCode)errorCode {
+    
 }
 
 @end

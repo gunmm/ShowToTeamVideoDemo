@@ -141,6 +141,14 @@ static void EncodeCallBack(void *VTref, void *VTFrameRef, OSStatus status, VTEnc
 }
 
 - (void)configManager {
+    if (compressionSession) {
+        VTCompressionSessionCompleteFrames(compressionSession, kCMTimeInvalid);
+        
+        VTCompressionSessionInvalidate(compressionSession);
+        CFRelease(compressionSession);
+        compressionSession = NULL;
+    }
+    
     OSStatus status = VTCompressionSessionCreate(NULL, 1280, 720, kCMVideoCodecType_H264, NULL, NULL, NULL, EncodeCallBack, (__bridge void *)self, &compressionSession);
     if (status != noErr) {
         return;

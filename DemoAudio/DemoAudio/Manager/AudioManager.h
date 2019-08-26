@@ -10,7 +10,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol AudioManagerDelegate <NSObject>
+
+- (void)audioOutputData:(void* __nullable)mData mDataByteSize:(UInt32)mDataByteSize;
+
+@end
+
 @interface AudioManager : NSObject
+
+@property (nonatomic, assign) id<AudioManagerDelegate> delegate;
+
+- (void)startCapture;
 
 @end
 

@@ -713,15 +713,15 @@
 		CD599841230FC958008F2EF3 /* LFLiveKit */ = {
 			isa = PBXGroup;
 			children = (
-				CD599842230FC958008F2EF3 /* configuration */,
 				CD599847230FC958008F2EF3 /* capture */,
-				CD59984C230FC958008F2EF3 /* LFLiveKit.h */,
-				CD59984D230FC958008F2EF3 /* objects */,
-				CD599858230FC958008F2EF3 /* LFLiveSession.m */,
-				CD599859230FC958008F2EF3 /* publish */,
-				CD599861230FC958008F2EF3 /* filter */,
 				CD599866230FC958008F2EF3 /* coder */,
+				CD599842230FC958008F2EF3 /* configuration */,
+				CD599861230FC958008F2EF3 /* filter */,
+				CD59984C230FC958008F2EF3 /* LFLiveKit.h */,
 				CD599878230FC958008F2EF3 /* LFLiveSession.h */,
+				CD599858230FC958008F2EF3 /* LFLiveSession.m */,
+				CD59984D230FC958008F2EF3 /* objects */,
+				CD599859230FC958008F2EF3 /* publish */,
 				CD599879230FC958008F2EF3 /* Vendor */,
 			);
 			path = LFLiveKit;
@@ -741,10 +741,10 @@
 		CD599847230FC958008F2EF3 /* capture */ = {
 			isa = PBXGroup;
 			children = (
-				CD599848230FC958008F2EF3 /* LFVideoCapture.m */,
 				CD599849230FC958008F2EF3 /* LFAudioCapture.h */,
-				CD59984A230FC958008F2EF3 /* LFVideoCapture.h */,
 				CD59984B230FC958008F2EF3 /* LFAudioCapture.m */,
+				CD59984A230FC958008F2EF3 /* LFVideoCapture.h */,
+				CD599848230FC958008F2EF3 /* LFVideoCapture.m */,
 			);
 			path = capture;
 			sourceTree = "<group>";
