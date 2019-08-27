@@ -12,14 +12,15 @@
 #import "LFStreamRTMPSocket.h"
 
 #import "AudioManager.h"
+#import "AudioCodeManager.h"
 
-@interface VideoViewController () <VideoManagerDelegate, VideoCodeManagerDelegate, LFStreamSocketDelegate, AudioManagerDelegate>
+@interface VideoViewController () <VideoManagerDelegate, VideoCodeManagerDelegate, LFStreamSocketDelegate, AudioManagerDelegate, AudioCodeManagerDelegate>
 
 @property (nonatomic, strong) VideoManager *videoManager;
 @property (nonatomic, strong) VideoCodeManager *videoCodeManager;
 
 @property (nonatomic, strong) AudioManager *audioManager;
-
+@property (nonatomic, strong) AudioCodeManager *audioCodeManager;
 
 @property (nonatomic, strong) id<LFStreamSocket> socket;
 @property (nonatomic, strong) LFLiveStreamInfo *streamInfo;
@@ -28,6 +29,8 @@
 
 @property (nonatomic, assign) BOOL canRecord;
 
+@property (nonatomic, strong) LFLiveAudioConfiguration *audioConfiguration;
+
 @end
 
 @implementation VideoViewController
@@ -35,10 +38,17 @@
 - (LFLiveStreamInfo *)streamInfo {
     if (!_streamInfo) {
         _streamInfo = [[LFLiveStreamInfo alloc] init];
-        _streamInfo.url = @"rtmp://send3.douyu.com/live/5194892ra0rVKqis?wsSecret=f99dd51a41baff075d2af9a36f24f9de&wsTime=5d5bc21e&wsSeek=off&wm=0&tw=0&roirecognition=0";
+        _streamInfo.url = @"rtmp://send3.douyu.com/live/5194892rT0rZyuOR?wsSecret=0422abb54322396fbaf55a7f6c9a45d1&wsTime=5d6501f4&wsSeek=off&wm=0&tw=0&roirecognition=0";
     }
     
     return _streamInfo;
+}
+
+- (LFLiveAudioConfiguration *)audioConfiguration {
+    if (!_audioConfiguration) {
+        _audioConfiguration = [LFLiveAudioConfiguration defaultConfiguration];
+    }
+    return _audioConfiguration;
 }
 
 - (id<LFStreamSocket>)socket {
@@ -60,8 +70,13 @@
     
     self.audioManager = [[AudioManager alloc] init];
     self.audioManager.delegate = self;
+    AudioStreamBasicDescription audioDataFormat = [self.audioManager getAudioDataFormat];
 
-//    [self.socket start];
+    self.audioCodeManager = [[AudioCodeManager alloc] initWithInputFormat:audioDataFormat];
+    self.audioCodeManager.delegate = self;
+    
+    NSLog(@"");
+    [self.socket start];
 }
 
 - (IBAction)beginBtnAct:(id)sender {
@@ -82,7 +97,7 @@
 #pragma mark -- AudioManagerDelegate
 
 - (void)audioOutputData:(void* __nullable)mData mDataByteSize:(UInt32)mDataByteSize {
-    
+    [self.audioCodeManager encodeAudioWithSourceBuffer:mData sourceBufferSize:mDataByteSize];
 }
 
 
@@ -111,6 +126,19 @@
         _lock = dispatch_semaphore_create(1);
     }
     return _lock;
+}
+
+#pragma mark -- audioCodeManagerDelegate
+- (void)audioOutputData:(LFAudioFrame *)frame {
+    if(self.relativeTimestamps == 0){
+        self.relativeTimestamps = frame.timestamp;
+    }
+    frame.timestamp = [self uploadTimestamp:frame.timestamp];
+    char exeData[2];
+    exeData[0] = self.audioConfiguration.asc[0];
+    exeData[1] = self.audioConfiguration.asc[1];
+    frame.audioInfo = [NSData dataWithBytes:exeData length:2];
+    [self.socket sendFrame:frame];
 }
 
 #pragma mark -- LFStreamTcpSocketDelegate

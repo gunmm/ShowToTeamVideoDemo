@@ -7,11 +7,11 @@
 //
 
 #import "AudioManager.h"
-#import <AudioToolbox/AudioToolbox.h>
 
 @interface AudioManager ()
 
 @property (nonatomic, assign) AudioUnit audioUnit;
+@property (nonatomic, assign) AudioStreamBasicDescription audioDataFormat;
 
 @end
 
@@ -96,6 +96,9 @@ static OSStatus handleInputBuffer(void *inRefCon,
     desc.mBytesPerFrame = desc.mBitsPerChannel / 8 * desc.mChannelsPerFrame;  //每一帧中有多少字节
     desc.mBytesPerPacket = desc.mBytesPerFrame * desc.mFramesPerPacket;     //每个音频包中有多少字节数
     
+    //用来往出传
+    memcpy(&_audioDataFormat, &desc, sizeof(desc));
+
     AURenderCallbackStruct cb;
     cb.inputProcRefCon = (__bridge void *)(self);
     cb.inputProc = handleInputBuffer;
@@ -131,6 +134,8 @@ static OSStatus handleInputBuffer(void *inRefCon,
     }
 }
 
-
+- (AudioStreamBasicDescription)getAudioDataFormat {
+    return _audioDataFormat;
+}
 
 @end

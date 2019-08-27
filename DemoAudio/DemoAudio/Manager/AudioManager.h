@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AudioToolbox/AudioToolbox.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface AudioManager : NSObject
 
 @property (nonatomic, assign) id<AudioManagerDelegate> delegate;
+
+- (AudioStreamBasicDescription)getAudioDataFormat;
 
 - (void)startCapture;
 
