@@ -794,15 +794,15 @@
 		CD599866230FC958008F2EF3 /* coder */ = {
 			isa = PBXGroup;
 			children = (
+				CD59986B230FC958008F2EF3 /* H264 */,
 				CD599867230FC958008F2EF3 /* LFAudioEncoding.h */,
 				CD599868230FC958008F2EF3 /* LFH264VideoEncoder.h */,
-				CD599869230FC958008F2EF3 /* LFHardwareAudioEncoder.m */,
 				CD59986A230FC958008F2EF3 /* LFH264VideoEncoder.mm */,
-				CD59986B230FC958008F2EF3 /* H264 */,
-				CD599874230FC958008F2EF3 /* LFHardwareVideoEncoder.h */,
-				CD599875230FC958008F2EF3 /* LFVideoEncoding.h */,
 				CD599876230FC958008F2EF3 /* LFHardwareAudioEncoder.h */,
+				CD599869230FC958008F2EF3 /* LFHardwareAudioEncoder.m */,
+				CD599874230FC958008F2EF3 /* LFHardwareVideoEncoder.h */,
 				CD599877230FC958008F2EF3 /* LFHardwareVideoEncoder.m */,
+				CD599875230FC958008F2EF3 /* LFVideoEncoding.h */,
 			);
 			path = coder;
 			sourceTree = "<group>";

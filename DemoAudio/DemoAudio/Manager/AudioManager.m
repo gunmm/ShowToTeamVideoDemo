@@ -36,7 +36,9 @@ static OSStatus handleInputBuffer(void *inRefCon,
         AudioBufferList buffers;
         buffers.mNumberBuffers = 1;
         buffers.mBuffers[0] = buffer;
-        
+//        启动音频单元的渲染周期。
+//        ioData
+//        输入时，音频单元要渲染的音频缓冲列表。输出时，音频单元呈现的音频数据。
         OSStatus status = AudioUnitRender(source.audioUnit,
                                           ioActionFlags,
                                           inTimeStamp,
@@ -89,7 +91,7 @@ static OSStatus handleInputBuffer(void *inRefCon,
     AudioStreamBasicDescription desc = {0};
     desc.mSampleRate = 44100;    //采样率
     desc.mFormatID = kAudioFormatLinearPCM;     
-    desc.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;  //设置采样值的flag
+    desc.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;  //设置采样值的flag mFormatID下的格式
     desc.mChannelsPerFrame = 1;   //s声道
     desc.mFramesPerPacket = 1;   //每个包中有多少帧
     desc.mBitsPerChannel = 16;   //每个声道有多少位

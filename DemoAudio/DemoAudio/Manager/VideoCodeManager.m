@@ -149,7 +149,7 @@ static void EncodeCallBack(void *VTref, void *VTFrameRef, OSStatus status, VTEnc
         compressionSession = NULL;
     }
     
-    OSStatus status = VTCompressionSessionCreate(NULL, 1280, 720, kCMVideoCodecType_H264, NULL, NULL, NULL, EncodeCallBack, (__bridge void *)self, &compressionSession);
+    OSStatus status = VTCompressionSessionCreate(NULL, 720, 1280, kCMVideoCodecType_H264, NULL, NULL, NULL, EncodeCallBack, (__bridge void *)self, &compressionSession);
     if (status != noErr) {
         return;
     }
@@ -183,12 +183,39 @@ static void EncodeCallBack(void *VTref, void *VTFrameRef, OSStatus status, VTEnc
 
 //编码
 - (void)encodeVideoData:(CVPixelBufferRef)pixelBuffer timeStamp:(uint64_t)timeStamp {
+//    CMTime可是專門用來表示影片時間用的類別,
+//    他的用法為: CMTimeMake(time, timeScale)
+//    time指的就是時間(不是秒),
+//    而時間要換算成秒就要看第二個參數timeScale了.
+//    timeScale指的是1秒需要由幾個frame構成(可以視為fps),
+//    因此真正要表達的時間就會是 time / timeScale 才會是秒.
+//    CMTimeMake(a,b)
+//    a当前第几帧，b每秒钟多少帧
+    
     frameCount++;
     CMTime presentationTimeStamp = CMTimeMake(frameCount, (int32_t)30);
     VTEncodeInfoFlags flags;
     CMTime duration = CMTimeMake(1, (int32_t)30);
     
     NSNumber *timeNumber = @(timeStamp);
+//    @param presentationTimeStamp
+//    此帧的显示时间戳，将附加到样本缓冲区。
+//    传递给会话的每个演示文稿时间戳必须大于前一个。
+//    @param时间
+//    此帧的表示持续时间，将附加到样本缓冲区。
+//    如果您没有持续时间信息，请传递kCMTimeInvalid。
+//    @param frameProperties
+//    包含键/值对，指定用于编码此帧的其他属性。
+//    请注意，某些会话属性也可能在帧之间更改。
+//    这些变化对随后编码的帧有影响。
+//    @param sourceFrameRefcon
+//    帧的参考值，将传递给输出回调函数。
+//    @param infoFlagsOut
+//    指向VTEncodeInfoFlags以接收有关编码操作的信息。
+//    如果编码正在（或正在）运行，则可以设置kVTEncodeInfo_Asynchronous位
+//    异步。
+//    如果帧被丢弃（同步），则可以设置kVTEncodeInfo_FrameDropped位。
+//    如果您不想接收此信息，请传递NULL。
     
     OSStatus status = VTCompressionSessionEncodeFrame(compressionSession, pixelBuffer, presentationTimeStamp, duration, nil, (__bridge_retained void *)timeNumber, &flags);
     if(status != noErr){

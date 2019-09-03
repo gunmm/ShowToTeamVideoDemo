@@ -38,7 +38,7 @@
 - (LFLiveStreamInfo *)streamInfo {
     if (!_streamInfo) {
         _streamInfo = [[LFLiveStreamInfo alloc] init];
-        _streamInfo.url = @"rtmp://send3.douyu.com/live/5194892rT0rZyuOR?wsSecret=0422abb54322396fbaf55a7f6c9a45d1&wsTime=5d6501f4&wsSeek=off&wm=0&tw=0&roirecognition=0";
+        _streamInfo.url = @"rtmp://send3.douyu.com/live/5194892rsbWB5qU2?wsSecret=1118fe50ed8655f0a1f109f79447cb70&wsTime=5d6e2760&wsSeek=off&wm=0&tw=0&roirecognition=0";
     }
     
     return _streamInfo;
@@ -87,17 +87,88 @@
 #pragma mark -- VideoManagerDelegate
 
 - (void)didOutputSampleBuffer:(CMSampleBufferRef _Nullable )sampleBuffer {
+    if (!self.canRecord) {
+        return;
+    }
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    [self.videoCodeManager encodeVideoData:pixelBuffer timeStamp:CACurrentMediaTime()*1000];
+    return;
+    
+    
+    
+    CIImage *ciimage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
+    if (!ciimage) {
+        return;
+    }
     size_t width = CVPixelBufferGetWidth(pixelBuffer);
     size_t height = CVPixelBufferGetHeight(pixelBuffer);
-    NSLog(@"====== width:%zu height:%zu", width, height);
-    [self.videoCodeManager encodeVideoData:pixelBuffer timeStamp:CACurrentMediaTime()*1000];
+    
+    CGFloat widthScale = width/720.0;
+    CGFloat heightScale = height/1280.0;
+    CGFloat realWidthScale = 1;
+    CGFloat realHeightScale = 1;
+    
+    if (widthScale > 1 || heightScale > 1) {
+        if (widthScale < heightScale) {
+            realHeightScale = 1280.0/height;
+            CGFloat nowWidth = width * 1280 / height;
+            height = 1280;
+            realWidthScale = nowWidth/width;
+            width = nowWidth;
+        } else {
+            realWidthScale = 720.0/width;
+            CGFloat nowHeight = 720 * height / width;
+            width = 720;
+            realHeightScale = nowHeight/height;
+            height = nowHeight;
+        }
+    }
+   
+    CIContext *_ciContext = [CIContext contextWithOptions:nil];
+    {
+        CIImage *newImage = [ciimage imageByApplyingTransform:CGAffineTransformMakeScale(realWidthScale, realHeightScale)];
+        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+        CVPixelBufferRef newPixcelBuffer = nil;
+        CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
+        if (newPixcelBuffer && newImage) {
+            UIImage *sourceImage = [UIImage imageWithCIImage:newImage];
+            UIFont *font = [UIFont fontWithName:@"Helvetica" size:20];
+            CGSize size = CGSizeMake(50, 100);
+            NSDictionary *attributes = @{NSFontAttributeName: font,
+                                         NSForegroundColorAttributeName: [UIColor redColor]};
+            UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+            [sourceImage drawInRect:CGRectMake(0, 0, sourceImage.size.width, sourceImage.size.height)];
+//            [@"minzheminzheminzheminzheminzheminzheminzheminzheminzheminzheminzheminzhe" drawAtPoint:CGPointMake(size.width/2, size.height/2) withAttributes:attributes];
+            [@"minzheminzheminzheminzheminzheminzheminzheminzheminzheminzheminzheminzhe" drawInRect:CGRectMake(0, 0, 500, 30) withAttributes:attributes];
+            UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            NSLog(@"1---------  %@", [NSValue valueWithCGSize:size]);
+            
+            CIImage *filteredImage = [[CIImage alloc] initWithCGImage:image.CGImage];
+            [_ciContext render:filteredImage toCVPixelBuffer:newPixcelBuffer bounds:[filteredImage extent] colorSpace:CGColorSpaceCreateDeviceRGB()];
+            //                [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
+            
+            
+            NSLog(@"2---------  %@", [NSValue valueWithCGSize:size]);
+            
+            [self.videoCodeManager encodeVideoData:newPixcelBuffer timeStamp:CACurrentMediaTime()*1000];
+            NSLog(@"3---------  %@", [NSValue valueWithCGSize:size]);
+            
+        }
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+        CVPixelBufferRelease(newPixcelBuffer);
+    }
+    
+    
+    
 }
 
 #pragma mark -- AudioManagerDelegate
 
 - (void)audioOutputData:(void* __nullable)mData mDataByteSize:(UInt32)mDataByteSize {
-    [self.audioCodeManager encodeAudioWithSourceBuffer:mData sourceBufferSize:mDataByteSize];
+    if (self.canRecord) {
+        [self.audioCodeManager encodeAudioWithSourceBuffer:mData sourceBufferSize:mDataByteSize];
+    }
 }
 
 

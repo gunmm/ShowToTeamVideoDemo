@@ -63,12 +63,13 @@ OSStatus EncodeConverterComplexInputDataProc(AudioConverterRef              inAu
     self.outputFormat = outputFormat;
     
     const OSType subtype = kAudioFormatMPEG4AAC;
-    AudioClassDescription requestedCodecs[2] = {
-        {
-            kAudioEncoderComponentType,
-            subtype,
-            kAppleSoftwareAudioCodecManufacturer
-        },
+//    AudioClassDescription结构体描述了系统使用音频编码器信息,其中最重要的就是指定使用硬编或软编。然后编码器的数量，即数组的个数，由当前的声道数决定。
+    AudioClassDescription requestedCodecs[1] = {
+//        {
+//            kAudioEncoderComponentType,
+//            subtype,
+//            kAppleSoftwareAudioCodecManufacturer
+//        },
         {
             kAudioEncoderComponentType,
             subtype,
@@ -78,6 +79,7 @@ OSStatus EncodeConverterComplexInputDataProc(AudioConverterRef              inAu
     
     OSStatus result = AudioConverterNewSpecific(&_inputFormat, &outputFormat, 2, requestedCodecs, &m_converter);
     
+    //    我们可以手动设置需要的码率,如果没有特殊要求一般可以根据采样率使用建议值,如下.
     UInt32 outputBitRate = 64000;
     UInt32 propSize = sizeof(outputBitRate);
     if (outputFormat.mSampleRate >= 44100) {
@@ -86,6 +88,7 @@ OSStatus EncodeConverterComplexInputDataProc(AudioConverterRef              inAu
         outputBitRate = 32000;
     }
     outputBitRate *= outputFormat.mChannelsPerFrame;
+    
     if(result == noErr) {
         result = AudioConverterSetProperty(m_converter, kAudioConverterEncodeBitRate, propSize, &outputBitRate);
     }
@@ -93,7 +96,7 @@ OSStatus EncodeConverterComplexInputDataProc(AudioConverterRef              inAu
 }
 
 - (void)encodeAudioWithSourceBuffer:(void *)sourceBuffer sourceBufferSize:(UInt32)sourceBufferSize {
-    UInt32 outputSizePerPacket = _outputFormat.mBytesPerPacket;
+    UInt32 outputSizePerPacket = _outputFormat.mBytesPerPacket; //每个音频包中有多少字节数
     if (outputSizePerPacket == 0) {
         // if the destination format is VBR, we need to get max size per packet from the converter
         UInt32 size = sizeof(outputSizePerPacket);
@@ -102,7 +105,6 @@ OSStatus EncodeConverterComplexInputDataProc(AudioConverterRef              inAu
             NSLog(@"noErr---AudioConverterGetProperty");
             return;
         }
-       
     }
     
     UInt32 numberOutputPackets = 1;
