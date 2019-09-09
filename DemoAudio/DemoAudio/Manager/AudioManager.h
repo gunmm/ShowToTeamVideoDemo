@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (AudioStreamBasicDescription)getAudioDataFormat;
 
 - (void)startCapture;
+- (void)stopCapture;
 
 @end
 

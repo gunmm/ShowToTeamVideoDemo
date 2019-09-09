@@ -136,6 +136,15 @@ static OSStatus handleInputBuffer(void *inRefCon,
     }
 }
 
+- (void)stopCapture {
+    OSStatus status = AudioOutputUnitStop(self.audioUnit);
+    if (status != noErr){
+        NSLog(@"音频采集s停止失败");
+    }else {
+        NSLog(@"音频采集s停止success");
+    }
+}
+
 - (AudioStreamBasicDescription)getAudioDataFormat {
     return _audioDataFormat;
 }

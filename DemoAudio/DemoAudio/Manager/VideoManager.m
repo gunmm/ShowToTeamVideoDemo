@@ -30,7 +30,6 @@
 }
 
 - (void)configManager {
-    
     self.captureSession = [[AVCaptureSession alloc] init];
     self.captureSession.sessionPreset = AVCaptureSessionPreset1280x720;
     
@@ -42,7 +41,6 @@
     if (devices.count > 0) {
         inputCamera = [devices lastObject];
     }
-    
     AVCaptureDeviceInput *captureDeviceInput = [[AVCaptureDeviceInput alloc] initWithDevice:inputCamera error:nil];
     [self.captureSession addInput:captureDeviceInput];
     
@@ -53,6 +51,7 @@
     videoDataOutput.videoSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange]
                                                                 forKey:(id)kCVPixelBufferPixelFormatTypeKey];
     
+    //设置设备方向
     AVCaptureConnection *connection = [videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
     [connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
     
@@ -91,6 +90,9 @@
     [self.captureSession startRunning];
 }
 
+- (void)stopSession {
+    [self.captureSession stopRunning];
+}
 
 #pragma mark ---AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate
 

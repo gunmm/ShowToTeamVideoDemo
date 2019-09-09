@@ -38,7 +38,7 @@
 - (LFLiveStreamInfo *)streamInfo {
     if (!_streamInfo) {
         _streamInfo = [[LFLiveStreamInfo alloc] init];
-        _streamInfo.url = @"rtmp://send3.douyu.com/live/5194892rsbWB5qU2?wsSecret=1118fe50ed8655f0a1f109f79447cb70&wsTime=5d6e2760&wsSeek=off&wm=0&tw=0&roirecognition=0";
+        _streamInfo.url = @"rtmp://send3.douyu.com/live/5194892rMMygU8Rc?wsSecret=323cabf81de59ed982eff516e6d304ea&wsTime=5d761df1&wsSeek=off&wm=0&tw=0&roirecognition=0";
     }
     
     return _streamInfo;
@@ -230,6 +230,12 @@
 /** callback socket errorcode */
 - (void)socketDidError:(nullable id <LFStreamSocket>)socket errorCode:(LFLiveSocketErrorCode)errorCode {
     
+}
+
+- (void)dealloc {
+    [self.videoManager stopSession];
+    [self.audioManager stopCapture];
+    [self.socket stop];
 }
 
 @end

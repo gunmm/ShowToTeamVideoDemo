@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithBgView:(UIView *)bgView;
 
 - (void)startSession;
+- (void)stopSession;
 
 @end
 
